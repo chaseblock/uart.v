@@ -78,6 +78,7 @@ module uart(
                     reading  <= 1;
                     rx_pulse <= (clk_cnt + 5) % 10; // Close to the center of the frame
                     rx_bit   <= 6'h3f;  // A big number to show that we are reading the start bit
+                    rx_buf   <= 0;
                 end
             end
             else begin
@@ -105,7 +106,7 @@ module uart(
                     end
                     else begin
                         // It's a normal data bit
-                        rx_buf[rx_bit] <= rx;
+                        rx_buf <= {rx, rx_buf[DATA_WIDTH-1 : 1]};    // Shift the data in
                         rx_bit <= rx_bit + 1;
                     end
                 end
@@ -129,7 +130,8 @@ module uart(
                     end
                     else if(tx_bit < DATA_WIDTH) begin
                         // Transmit the next bit
-                        tx <= tx_buf[tx_bit];
+                        tx <= tx_buf[0];
+                        tx_buf <= {1'b1, tx_buf[DATA_WIDTH-1:1]};
                         tx_bit <= tx_bit + 1;
                     end
                     else if(tx_bit == DATA_WIDTH) begin

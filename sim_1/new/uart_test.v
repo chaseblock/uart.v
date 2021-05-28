@@ -27,19 +27,24 @@ module uart_test();
     wire tx, rx_err, rcvd, ready;
     wire [7:0] datarx;
 
-    uart #(.DATA_WIDTH(8)) u0(
-        .clk(clk), 
-        .rx(rx), 
-        .tx(tx),
-        .rx_err(rx_err), 
-        .rcvd(rcvd),
-        .datarx(datarx), 
-        .datatx(datatx),
-        .start(start), 
-        .rxack(rxack),
-        .ready(ready),
-        .reset(reset)
-    );
+//    uart #(.DATA_WIDTH(8)) u0(
+//        .clk(clk), 
+//        .rx(rx), 
+//        .tx(tx),
+//        .rx_err(rx_err), 
+//        .rcvd(rcvd),
+//        .datarx(datarx), 
+//        .datatx(datatx),
+//        .start(start), 
+//        .rxack(rxack),
+//        .ready(ready),
+//        .reset(reset)
+//    );
+
+    echo e(.clk(clk),
+         .tx(tx),
+         .rx(rx),
+         .rst(reset));
     
     initial begin
         clk = 0;
@@ -54,45 +59,71 @@ module uart_test();
         rxack  <= 1;
         datatx <= 0;
         reset  <= 1;
-        #53;
+        #10000;
         reset <= 0;
         rxack <= 0;
         
-        #10;
+        #10000;
         
         // Start receiving some data
         rx <= 0;    // Start frame
         
         // Wait for ten cycles for each bit
-        #100;
+        #8681;
         rx <= 0;
-        #100;
+        #8681;
         rx <= 1;
-        #100;
+        #8681;
         rx <= 1;
-        #100;
+        #8681;
         rx <= 1;
-        #100;
+        #8681;
         rx <= 0;
-        #100;
+        #8681;
         rx <= 0;
-        #100;
+        #8681;
         rx <= 0;
-        #100;
+        #8681;
         rx <= 1;
-        #100;
+        #8681;
         rx <= 1;    // Stop bit
-        #200;
+        #8681;
         rxack <= 1;
-        #100;
+        #50;
+        rxack <= 0;
+        
+        rx <= 0;    // Start
+        #8681
+        
+        // Wait for ten cycles for each bit
+        rx <= 0;
+        #8681;
+        rx <= 1;
+        #8681;
+        rx <= 1;
+        #8681;
+        rx <= 1;
+        #8681;
+        rx <= 0;
+        #8681;
+        rx <= 0;
+        #8681;
+        rx <= 0;
+        #8681;
+        rx <= 1;
+        #8681;
+        rx <= 1;    // Stop bit
+        #8681;
+        rxack <= 1;
+        #10000;
         rxack <= 0;
         
         // Now we set up to transmit
-        datatx <= 8'hED;
-        #10;
-        start <= 1;
-        #10;
-        start <= 0;
+//        datatx <= 8'hED;
+//        #10;
+//        start <= 1;
+//        #10;
+//        start <= 0;
     end
 
 endmodule
